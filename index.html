@@ -459,9 +459,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#resources" class="md-nav__link">
     <span class="md-ellipsis">
-      Examples
+      Resources
     </span>
   </a>
   
@@ -726,6 +726,29 @@
   
   
     <li class="md-nav__item">
+      <a href="user_guide/object_transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Transforms
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="user_guide/using_nixhelm/" class="md-nav__link">
         
   
@@ -755,6 +778,29 @@
   
   <span class="md-ellipsis">
     Directly Apply Manifests
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user_guide/assertions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Assertions & Warnings
     
   </span>
   
@@ -1135,9 +1181,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#resources" class="md-nav__link">
     <span class="md-ellipsis">
-      Examples
+      Resources
     </span>
   </a>
   
@@ -1218,7 +1264,7 @@
   <a href="https://nixidy.dev/user_guide/getting_started/">Getting Started</a> •
   <a href="https://nixidy.dev/">Documentation</a> •
   <a href="#features">Features</a> •
-  <a href="#examples">Examples</a>
+  <a href="#resources">Resources</a>
 </p>
 
 <h2 id="why-nixidy">Why Nixidy?<a class="headerlink" href="#why-nixidy" title="Permanent link">#</a></h2>
@@ -1396,13 +1442,17 @@ applications<span class="o">.</span>frontend<span class="o">.</span>templates<sp
 <p>Uses <code>kubectl apply --prune</code> for safe, declarative deployments directly to your cluster.</p>
 <h3 id="crd-support">🎛️ CRD Support<a class="headerlink" href="#crd-support" title="Permanent link">#</a></h3>
 <p>Generate typed Nix options from any Custom Resource Definition:</p>
-<div class="highlight"><pre><span></span><code>packages<span class="o">.</span>generators<span class="o">.</span><span class="ss">cilium</span> <span class="o">=</span> nixidy<span class="o">.</span>packages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="o">.</span>generators<span class="o">.</span>fromCRD <span class="p">{</span>
-  <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;cilium&quot;</span><span class="p">;</span>
-  <span class="ss">src</span> <span class="o">=</span> pkgs<span class="o">.</span>fetchFromGitHub <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">};</span>
-  <span class="ss">crds</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;pkg/k8s/apis/cilium.io/client/crds/v2/ciliumnetworkpolicies.yaml&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span> generators<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span> <span class="p">{</span>
+  nixidy<span class="o">.</span><span class="ss">applicationImports</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span>generators<span class="o">.</span>fromCRDModule <span class="p">{</span>
+      <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;cilium&quot;</span><span class="p">;</span>
+      <span class="ss">src</span> <span class="o">=</span> pkgs<span class="o">.</span>fetchFromGitHub <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">};</span>
+      <span class="ss">crdFiles</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;pkg/k8s/apis/cilium.io/client/crds/v2/ciliumnetworkpolicies.yaml&quot;</span>
+      <span class="p">];</span>
+    <span class="p">})</span>
   <span class="p">];</span>
-<span class="p">};</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Then use your CRDs with full type safety:</p>
 <div class="highlight"><pre><span></span><code>resources<span class="o">.</span>ciliumNetworkPolicies<span class="o">.</span>allow-dns<span class="o">.</span><span class="ss">spec</span> <span class="o">=</span> <span class="p">{</span>
@@ -1418,7 +1468,7 @@ applications<span class="o">.</span>frontend<span class="o">.</span>templates<sp
 <div class="highlight"><span class="filename">flake.nix</span><pre><span></span><code><span class="p">{</span>
   <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
     nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:nixos/nixpkgs/nixos-unstable&quot;</span><span class="p">;</span>
-    nixidy<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:arnarg/nixidy&quot;</span><span class="p">;</span>
+    nixidy<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:arnarg/nixidy/latest&quot;</span><span class="p">;</span>
   <span class="p">};</span>
 
   <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> nixpkgs<span class="p">,</span> nixidy<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span> <span class="p">{</span>
@@ -1449,16 +1499,17 @@ applications<span class="o">.</span>frontend<span class="o">.</span>templates<sp
 <p>See the <a href="https://nixidy.dev/user_guide/getting_started/">Getting Started Guide</a> for detailed setup instructions.</p>
 <h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">#</a></h2>
 <ul>
-<li><strong><a href="https://nixidy.dev/user_guide/getting_started/">Getting Started</a></strong> — Set up your first nixidy project</li>
-<li><strong><a href="https://nixidy.dev/user_guide/helm_charts/">Helm Charts</a></strong> — Integrate existing Helm charts</li>
-<li><strong><a href="https://nixidy.dev/user_guide/templates/">Templates</a></strong> — Create reusable application patterns</li>
-<li><strong><a href="https://nixidy.dev/user_guide/git_strategies/">Git Strategies</a></strong> — Monorepo vs. environment branches</li>
-<li><strong><a href="https://nixidy.dev/user_guide/github_actions/">GitHub Actions</a></strong> — CI/CD integration</li>
-<li><strong><a href="https://nixidy.dev/user_guide/typed_resources/">Typed Resources</a></strong> — Generate types for CRDs</li>
+<li><strong><a href="https://nixidy.dev/user_guide/getting_started/">Getting Started</a></strong> - Set up your first nixidy project</li>
+<li><strong><a href="https://nixidy.dev/user_guide/helm_charts/">Helm Charts</a></strong> - Integrate existing Helm charts</li>
+<li><strong><a href="https://nixidy.dev/user_guide/templates/">Templates</a></strong> - Create reusable application patterns</li>
+<li><strong><a href="https://nixidy.dev/user_guide/git_strategies/">Git Strategies</a></strong> - Monorepo vs. environment branches</li>
+<li><strong><a href="https://nixidy.dev/user_guide/github_actions/">GitHub Actions</a></strong> - CI/CD integration</li>
+<li><strong><a href="https://nixidy.dev/user_guide/typed_resources/">Typed Resources</a></strong> - Generate types for CRDs</li>
 </ul>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<h2 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">#</a></h2>
 <ul>
-<li><strong><a href="https://github.com/arnarg/cluster">arnarg/cluster</a></strong> — Real-world cluster configuration using nixidy</li>
+<li><strong><a href="https://github.com/arnarg/cluster">arnarg/cluster</a></strong> - Real-world cluster configuration using nixidy</li>
+<li><strong><a href="https://codedbearder.com/posts/nixidy-part-1-introduction/">Introduction to nixidy</a></strong> - Tutorial series</li>
 </ul>
 <h2 id="comparison">Comparison<a class="headerlink" href="#comparison" title="Permanent link">#</a></h2>
 <table>
@@ -1525,8 +1576,8 @@ applications<span class="o">.</span>frontend<span class="o">.</span>templates<sp
 <p>Contributions are welcome! Whether it's bug reports, feature requests, documentation improvements, or code contributions, please feel free to open an issue or pull request on our <a href="https://github.com/arnarg/nixidy">GitHub repository</a>.</p>
 <h2 id="acknowledgments">Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permanent link">#</a></h2>
 <ul>
-<li><strong><a href="https://github.com/farcaller/nix-kube-generators">nix-kube-generators</a></strong> — Used internally for Helm chart rendering</li>
-<li><strong><a href="https://github.com/hall/kubenix">kubenix</a></strong> — Resource options generator forked from kubenix</li>
+<li><strong><a href="https://github.com/farcaller/nix-kube-generators">nix-kube-generators</a></strong> - Used internally for Helm chart rendering</li>
+<li><strong><a href="https://github.com/hall/kubenix">kubenix</a></strong> - Resource options generator forked from kubenix</li>
 </ul>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">#</a></h2>
 <p>nixidy is licensed under the <a href="https://github.com/arnarg/nixidy/blob/main/LICENSE">MIT License</a>.</p>
